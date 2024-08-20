@@ -52,7 +52,21 @@ unsigned int utf8_strlen(char* unicode) {
  *   bytes_for("成龙", 3) -> -1
  */
 unsigned int bytes_for(char* unicode, unsigned int n) {
-  return 0;
+  unsigned int utf8_len = utf8_strlen(unicode);
+  if (n > utf8_len) {
+    return -1;
+  }
+  else {
+    unsigned int utf8_char_seen = 0;
+    unsigned int bytes_seen = 0;
+    while (utf8_char_seen < n) {
+      unsigned int utf8_bytes_this = num_bytes(unicode[bytes_seen]);
+      utf8_char_seen += 1;
+      bytes_seen += utf8_bytes_this;
+    }
+    return bytes_seen;
+  }
+  return 0; 
 }
 
 int main(int argc, char** argv) {
@@ -72,6 +86,9 @@ int main(int argc, char** argv) {
     printf("%d(%x) ", letter, letter);
   }
   printf("\n");
+  printf("bytes_for(\"Ülo\", 3) should return 4: %d\n", bytes_for("Ülo", 3));
+  printf("bytes_for(\"成龙\", 2) should return 6: %d\n", bytes_for("成龙", 2));
+  printf("bytes_for(\"成龙\", 3) should return -1: %d\n", bytes_for("成龙", 3));
 
   return 0;
 }
